@@ -1,6 +1,6 @@
 import React from "react";
-import { sortDesc } from "./utils/sort";
-import { capitalize } from "./utils/strings";
+import { sortDesc } from "../utils/sort";
+import { capitalize } from "../utils/strings";
 
 const Pokemon = ({
   pokemon: { Number: Id, Name, Types, img, MaxCP },

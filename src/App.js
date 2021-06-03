@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from "react";
-import Pokemon from "./pokemon";
+import Pokemon from "./components/pokemon";
+import NotResults from "./components/not-results"
 import { sortByName, sortByMaxCp } from "./utils/sort";
 import config from "./config";
 import "./App.css";
-const { API_URL, LOADING_URL } = config;
+const { API_URL } = config;
 
 const App = () => {
   const [pokemons, setPokemons] = useState([]);
@@ -54,7 +55,6 @@ const App = () => {
       setNameSearched("");
       const filteredPokemons = filterPokemons(pokemons, query);
       setPokemonsFound(filteredPokemons);
-      console.log(filteredPokemons);
     }
   };
 
@@ -68,11 +68,6 @@ const App = () => {
       const filteredPokemons = filterPokemons(sortedByMaxCp, searchQuery).sort(
         sortByMaxCp
       );
-      const cps = pokemons.map(({ MaxCP }) => MaxCP);
-      const cpsF = filteredPokemons.map(({ MaxCP }) => MaxCP);
-
-      console.log("all", cps);
-      console.log("filtered", cpsF);
       setPokemons((previousPokemos) => sortedByMaxCp);
       setPokemonsFound((previousFilteredPokemos) => filteredPokemons);
     } else {
@@ -106,16 +101,9 @@ const App = () => {
               nameSearched={nameSearched}
             />
           ))
-        ) : pokemonsFound?.length === 0 ? (
-          <li>
-            <img src={LOADING_URL} alt="" />
-            <div className="info">
-              <h1 className="no-results">No results</h1>
-            </div>
-          </li>
-        ) : (
-          <></>
-        )}
+        ) : pokemonsFound?.length === 0 ? ( <NotResults /> ) 
+          : <></>
+        }
       </ul>
     </>
   );
