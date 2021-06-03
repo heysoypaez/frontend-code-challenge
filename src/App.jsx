@@ -1,15 +1,17 @@
 import React, { useCallback, useState } from 'react';
 import Pokemon from "./pokemon"
 import {sortByName } from "./utils/sort"
+import config from "./config"
 import './App.css';
-
-const URL_PATH = "https://gist.githubusercontent.com/bar0191/fae6084225b608f25e98b733864a102b/raw/dea83ea9cf4a8a6022bfc89a8ae8df5ab05b6dcc/pokemon.json";
+const { API_URL, LOADING_URL } = config
 
 const App = () => {
 
     const [pokemons, setPokemons] = useState([])
     const [loading, setLoading] = useState(false)    
     const [pokemonsFound, setPokemonsFound] = useState(undefined)
+    const [nameSearched,setNameSearched] = useState("") 
+    const [searchQuery,setSearchQuery] = useState("")
 
     const getPokemons = useCallback(async(url) => {
         setLoading(true)
@@ -27,17 +29,19 @@ const App = () => {
 
     const handleInputChange = async (event) => {
         const { target: { value } } = event
+        setSearchQuery(value)
         const THRESHOLD_FETCH = 1
-        const THRESHOLD_SEARCH = 2
         if(value.length === THRESHOLD_FETCH && pokemons.length === 0) {
-            const data = await getPokemons(URL_PATH)
+            const data = await getPokemons(API_URL)
             setPokemons(data)
         }
         if(pokemons.length > 1) {
+            setNameSearched("")
             const filteredPokemons = pokemons.filter(pokemon => {
                 const {Name, Types} = pokemon
                 const searchByType = Types.some((type) => type.includes(value));
                 const searchByName = Name.includes(value)
+                searchByName && setNameSearched(value)
                 return searchByType || searchByName
             }).slice(0,4)
               .sort(sortByName);
@@ -63,12 +67,18 @@ const App = () => {
                 loading && <div className="loader"></div>
                 
             }
-            { pokemonsFound?.length > 0 ? (
-              pokemonsFound.map(filteredPokemon => <Pokemon pokemon={filteredPokemon} key={filteredPokemon.Number} />)        
+            { pokemonsFound?.length > 0 && searchQuery ? (
+              pokemonsFound.map(filteredPokemon => (
+                <Pokemon 
+                    pokemon={filteredPokemon} 
+                    key={filteredPokemon.Number} 
+                    nameSearched={nameSearched} 
+                />)
+              )        
             )
             : pokemonsFound?.length === 0 ?
             <li>
-                <img src="https://cyndiquil721.files.wordpress.com/2014/02/missingno.png" alt="" />
+                <img src={LOADING_URL} alt="" />
                 <div className="info">
                     <h1 className="no-results">
                         No results
