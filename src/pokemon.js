@@ -9,7 +9,7 @@ const Pokemon = ({
     <div className="info">
       <h1>
         {
-          nameSearched && Name.includes(nameSearched) ? 
+          nameSearched && Name.match(`^${nameSearched}.*`) ? 
           <><span className="hl">{nameSearched}</span>{Name.replace(nameSearched,"")}</>
           : <>{Name}</>
         }
