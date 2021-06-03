@@ -13,6 +13,11 @@ const App = () => {
   const [nameSearched, setNameSearched] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
+
+  /**
+   Helpers
+  */
+
   const getPokemons = useCallback(async (url) => {
     setLoading(true);
     return await fetch(url)
@@ -39,6 +44,10 @@ const App = () => {
       })
       .slice(0, 4)
       .sort(sortByName);
+
+  /**
+   Handlers
+  */
 
   const handleInputChange = async (event) => {
     const {
@@ -68,8 +77,8 @@ const App = () => {
       const filteredPokemons = filterPokemons(sortedByMaxCp, searchQuery).sort(
         sortByMaxCp
       );
-      setPokemons((previousPokemos) => sortedByMaxCp);
-      setPokemonsFound((previousFilteredPokemos) => filteredPokemons);
+      setPokemons(sortedByMaxCp);
+      setPokemonsFound(filteredPokemons);
     } else {
       const sortedByName = pokemons.sort(sortByName);
       const filteredPokemons = filterPokemons(sortedByName, searchQuery);
@@ -77,6 +86,10 @@ const App = () => {
       setPokemonsFound(filteredPokemons);
     }
   };
+
+  /**
+   Render
+  */
 
   return (
     <>
