@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState } from "react";
 import Pokemon from "./pokemon";
 import { sortByName, sortByMaxCp } from "./utils/sort";
 import config from "./config";
@@ -30,9 +30,9 @@ const App = () => {
       .filter((pokemon) => {
         const { Name, Types } = pokemon;
         const searchByType = Types.some((type) =>
-          type.includes(searchQueryValue)
+          type.toLowerCase().includes(searchQueryValue)
         );
-        const searchByName = Name.includes(searchQueryValue);
+        const searchByName = Name.toLowerCase().includes(searchQueryValue);
         searchByName && setNameSearched(searchQueryValue);
         return searchByType || searchByName;
       })
@@ -43,16 +43,16 @@ const App = () => {
     const {
       target: { value },
     } = event;
-    setSearchQuery(value);
+    const query = value.toLowerCase();
+    setSearchQuery(query);
     const THRESHOLD_FETCH = 1;
-    if (value.length === THRESHOLD_FETCH && pokemons.length === 0) {
+    if (query.length === THRESHOLD_FETCH && pokemons.length === 0) {
       const data = await getPokemons(API_URL);
       setPokemons(data);
     }
     if (pokemons.length > 1) {
       setNameSearched("");
-      const filteredPokemons = filterPokemons(pokemons, value);
-
+      const filteredPokemons = filterPokemons(pokemons, query);
       setPokemonsFound(filteredPokemons);
       console.log(filteredPokemons);
     }
@@ -68,10 +68,13 @@ const App = () => {
       const filteredPokemons = filterPokemons(sortedByMaxCp, searchQuery).sort(
         sortByMaxCp
       );
-      sortedByMaxCp.map((pokemon) => console.log(pokemon?.MaxCP));
+      const cps = pokemons.map(({ MaxCP }) => MaxCP);
+      const cpsF = filteredPokemons.map(({ MaxCP }) => MaxCP);
 
-      setPokemons(sortedByMaxCp);
-      setPokemonsFound(filteredPokemons);
+      console.log("all", cps);
+      console.log("filtered", cpsF);
+      setPokemons((previousPokemos) => sortedByMaxCp);
+      setPokemonsFound((previousFilteredPokemos) => filteredPokemons);
     } else {
       const sortedByName = pokemons.sort(sortByName);
       const filteredPokemons = filterPokemons(sortedByName, searchQuery);

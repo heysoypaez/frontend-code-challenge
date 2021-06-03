@@ -1,38 +1,22 @@
-const sortByName = (first, second) => {
-  const firstName = first.Name.toUpperCase();
-  const secondName = second.Name.toUpperCase();
-  if (firstName < secondName) {
-    return -1;
-  }
-  if (firstName > secondName) {
-    return 1;
-  }
-  return 0;
-};
+const sortDesc = (first, second) =>
+  first < second ? -1 : first > second ? 1 : 0;
 
-const sortByType = (first, second) => {
-  const firstName = first.Name.toUpperCase();
-  const secondName = second.Name.toUpperCase();
-  if (firstName < secondName) {
-    return -1;
-  }
-  if (firstName > secondName) {
-    return 1;
-  }
-  return 0;
+const sortByName = (first, second) => {
+  const firstName = first.Name.toLowerCase();
+  const secondName = second.Name.toLowerCase();
+  return sortDesc(firstName, secondName);
 };
 
 const sortByMaxCp = (first, second) => {
   const firstMaxCP = first?.MaxCP;
   const secondMaxCP = second?.MaxCP;
-  if (secondMaxCP > firstMaxCP) {
-    return 1;
-  } else if (secondMaxCP === firstMaxCP) {
-    return 0;
-  } else if (secondMaxCP < firstMaxCP) {
-    return -1;
-  }
-  return 1;
+  return secondMaxCP > firstMaxCP
+    ? 1
+    : secondMaxCP === firstMaxCP
+    ? 0
+    : secondMaxCP < firstMaxCP
+    ? -1
+    : 2;
 };
 
-export { sortByName, sortByType, sortByMaxCp };
+export { sortByName, sortDesc, sortByMaxCp };
